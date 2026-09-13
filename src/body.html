@@ -1,0 +1,131 @@
+<!-- ===================== BOOT ===================== -->
+<div id="boot">
+  <div class="boot-box">
+    <div class="boot-logo">Mystery Deck</div>
+    <div class="boot-lines" id="bootLines"></div>
+    <div class="boot-bar"><i></i></div>
+  </div>
+</div>
+
+<!-- ===================== BACKGROUND FX ===================== -->
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="floor" aria-hidden="true"></div>
+<div class="orb a" aria-hidden="true"></div>
+<div class="orb b" aria-hidden="true"></div>
+<div class="orb c" aria-hidden="true"></div>
+<div class="scan" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor-glow" id="cglow" aria-hidden="true"></div>
+<div id="burst" aria-hidden="true"></div>
+<div class="flash" id="flash" aria-hidden="true"></div>
+
+<div class="shell">
+
+  <!-- ===================== TICKER ===================== -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track" id="tickerTrack"></div>
+  </div>
+
+  <!-- ===================== HERO ===================== -->
+  <header class="hero">
+    <div class="eyebrow">Sealed archive // 500 concepts // unlicensed for reuse</div>
+    <div class="title-wrap">
+      <h1 class="glitch" data-text="Mystery Deck">Mystery Deck</h1>
+    </div>
+    <p class="subtitle">
+      Five hundred <b>sealed web-app ideas</b>. Every card hides a product nobody has built yet —
+      hover to charge it, click to break the seal, and keep whatever you find.
+    </p>
+
+    <div class="hud">
+      <div class="cell" style="--c:var(--cy)"><span class="k">Cards</span><span class="v" id="stTotal">500</span></div>
+      <div class="cell" style="--c:var(--li)"><span class="k">Unsealed</span><span class="v" id="stOpen">0</span></div>
+      <div class="cell" style="--c:var(--mg)"><span class="k">Sealed</span><span class="v" id="stSealed">500</span></div>
+      <div class="cell" style="--c:var(--go)"><span class="k">Legendary</span><span class="v" id="stLeg">0</span></div>
+      <div class="cell" style="--c:var(--vi)"><span class="k">Categories</span><span class="v" id="stCat">14</span></div>
+    </div>
+
+    <div class="legend" id="legend"></div>
+  </header>
+
+  <!-- ===================== CONTROLS ===================== -->
+  <div class="controls">
+    <div class="crow">
+      <label class="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+        <input id="q" type="search" placeholder="SEARCH IDEAS, TAGS, CATEGORIES…" autocomplete="off" spellcheck="false" aria-label="Search ideas">
+        <kbd>/</kbd>
+      </label>
+      <select id="diff" aria-label="Filter by difficulty">
+        <option value="">Difficulty: all</option>
+        <option value="1">1 — weekend build</option>
+        <option value="2">2 — easy</option>
+        <option value="3">3 — medium</option>
+        <option value="4">4 — hard</option>
+        <option value="5">5 — brutal</option>
+      </select>
+      <select id="state" aria-label="Filter by seal state">
+        <option value="">Seal: all</option>
+        <option value="sealed">Sealed only</option>
+        <option value="revealed">Unsealed only</option>
+      </select>
+      <select id="sort" aria-label="Sort cards">
+        <option value="id">Sort: card no.</option>
+        <option value="rarity">Sort: rarity</option>
+        <option value="hard">Sort: hardest first</option>
+        <option value="easy">Sort: easiest first</option>
+        <option value="spark">Sort: spark score</option>
+        <option value="shuffle">Sort: shuffle</option>
+      </select>
+      <button class="btn mg" id="deal" title="Deal one random card (R)">⬢ Deal one</button>
+      <button class="btn li" id="openAll" title="Break every seal">Unseal all</button>
+      <button class="btn ghost" id="reseal" title="Re-seal the deck">Reseal</button>
+      <button class="btn vi ghost" id="sound" aria-pressed="false" title="Toggle sound (S)">♪ Off</button>
+      <div class="count"><b id="shown">500</b> / 500 shown</div>
+    </div>
+    <div class="crow">
+      <div class="chips" id="catChips"></div>
+    </div>
+    <div class="crow">
+      <div class="chips" id="rarChips"></div>
+    </div>
+  </div>
+
+  <!-- ===================== GRID ===================== -->
+  <main class="grid" id="grid" aria-label="Mystery cards"></main>
+  <div id="sentinel"></div>
+  <div class="loader" id="loader" hidden><i></i><i></i><i></i><span>loading cards</span></div>
+
+  <footer>
+    <div class="keys">
+      <span><kbd>/</kbd> search</span><span><kbd>R</kbd> deal random</span>
+      <span><kbd>U</kbd> unseal all</span><span><kbd>S</kbd> sound</span><span><kbd>Esc</kbd> close</span>
+    </div>
+    <p>500 cards · 14 categories · 5 rarity tiers</p>
+    <p class="sig">Steal an idea. Ship it. Credit the deck.</p>
+  </footer>
+</div>
+
+<!-- ===================== PROGRESS DOCK ===================== -->
+<div class="dock">
+  <span class="lbl">Deck progress <b id="dockCount">0 / 500</b></span>
+  <div class="pbar"><b id="dockBar"></b></div>
+  <span class="pct" id="dockPct">0%</span>
+</div>
+
+<!-- ===================== DEAL MODAL ===================== -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Random card">
+  <div class="veil" data-close></div>
+  <div class="box">
+    <button class="close-x" data-close aria-label="Close">✕</button>
+    <div class="deal-title" id="dealTitle">Dealing…</div>
+    <div class="deal-sub" id="dealSub">random pull from the deck</div>
+    <div class="deal-card" id="dealCard"></div>
+    <div class="row" style="margin-top:20px">
+      <button class="btn" id="dealAgain">↻ Deal another</button>
+      <button class="btn ghost" data-close>Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
